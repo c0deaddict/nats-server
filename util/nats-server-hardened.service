@@ -1,0 +1,43 @@
+[Unit]
+Description=NATS Server
+After=network.target ntp.service
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/nats-server -c /etc/nats-server.conf
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s SIGINT $MAINPID
+User=nats
+Group=nats
+
+# Hardening
+CapabilityBoundingSet=
+LockPersonality=true
+MemoryDenyWriteExecute=true
+PrivateDevices=true
+PrivateTmp=true
+PrivateUsers=true
+PrivateIPC=true
+ProcSubset=pid
+ProtectClock=true
+ProtectControlGroups=true
+ProtectHome=true
+ProtectHostname=true
+ProtectKernelLogs=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectProc=invisible
+ProtectSystem=strict
+ReadOnlyPaths=
+RestrictAddressFamilies=AF_INET AF_INET6
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+SystemCallFilter=@system-service ~@privileged ~@resources
+UMask=0077
+
+# Optional: writable directory for JetStream.
+ReadWritePaths=/var/lib/nats
+
+[Install]
+WantedBy=multi-user.target
